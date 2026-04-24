@@ -212,7 +212,12 @@ function initContact() {
   var hoursEl = document.getElementById('contactHours');
   if (hoursEl && contactData.workHours) hoursEl.textContent = contactData.workHours;
   var wechatEl = document.getElementById('contactWechat');
-  if (wechatEl && contactData.wechat) wechatEl.textContent = contactData.wechat;
+  var wechatItem = document.getElementById('contactWechatItem');
+  if (wechatEl) {
+    wechatEl.innerHTML = '<span style="font-size:1.1em">👉</span> 点击扫码添加微信，快速获取报价';
+    wechatEl.title = '点击查看微信二维码';
+    if (wechatItem) wechatItem.style.display = '';
+  }
 }
 
 // 打开地图（手机用scheme调起/自动跳转地图，电脑直接开网页）
@@ -598,75 +603,151 @@ function _zoomImg(src) {
 }
 
 
-// ========== 联系选择弹窗（手机用原生选择器，电脑用自定义浮窗） ==========
+// ========== 联系选择弹窗（手机底部弹窗，电脑居中浮窗） ==========
 function contactCta() {
   var phone = contactData.phone || '19148031345';
+  var phoneDisplay = contactData.phoneDisplay || phone;
+  var wechatId = contactData.wechat || '';
+  var wechatQR = contactData.wechatQR || '';
+  var siteName = siteData.shortName || '中程装饰';
   var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
+  if (document.getElementById('_contactCtaBox')) document.getElementById('_contactCtaBox').remove();
+  if (document.getElementById('_contactCtaMask')) document.getElementById('_contactCtaMask').remove();
+
+  var mask = document.createElement('div');
+  mask.id = '_contactCtaMask';
+
+  var box = document.createElement('div');
+  box.id = '_contactCtaBox';
+
   if (isMobile) {
-    // 手机：用原生 select 弹出系统选项
-    if (document.getElementById('_mobileContactSelect')) document.getElementById('_mobileContactSelect').remove();
-    var sel = document.createElement('select');
-    sel.id = '_mobileContactSelect';
-    sel.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;border:none;pointer-events:none';
-    sel.innerHTML =
-      '<option value="">选择联系方式</option>' +
-      '<option value="tel:' + phone + '">📞 拨打电话 ' + (contactData.phoneDisplay || phone) + '</option>' +
-      '<option value="copy-wechat">💬 添加微信 ' + (contactData.wechat || '') + '</option>';
-    document.body.appendChild(sel);
-    sel.focus();
-    sel.size = 2;
-    sel.addEventListener('change', function() {
-      var val = this.value;
-      document.body.removeChild(sel);
-      if (val === 'copy-wechat') {
-        copyWechat();
-      } else if (val) {
-        window.location.href = val;
+    // 手机：底部弹窗
+    mask.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:999998';
+    box.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px 0;z-index:999999;padding-bottom:calc(env(safe-area-inset-bottom) + 20px)';
+
+    var wechatBtn = '';
+    if (wechatId) {
+      if (wechatQR) {
+        wechatBtn = '<div class="cta-opt-item" onclick="showWechatQR()">' +
+          '<div class="cta-opt-icon" style="background:#07c160">💬</div>' +
+          '<div class="cta-opt-text">' +
+            '<div class="cta-opt-title">添加微信</div>' +
+            '<div class="cta-opt-sub">' + wechatId + '</div>' +
+          '</div>' +
+          '<div class="cta-opt-arrow">›</div>' +
+        '</div>';
+      } else {
+        wechatBtn = '<div class="cta-opt-item" onclick="copyWechat()">' +
+          '<div class="cta-opt-icon" style="background:#07c160">💬</div>' +
+          '<div class="cta-opt-text">' +
+            '<div class="cta-opt-title">添加微信</div>' +
+            '<div class="cta-opt-sub">点击复制微信号</div>' +
+          '</div>' +
+          '<div class="cta-opt-arrow">›</div>' +
+        '</div>';
       }
-    });
-    sel.addEventListener('blur', function() {
-      if (document.getElementById('_mobileContactSelect')) document.body.removeChild(sel);
-    });
-    sel.click();
+    }
+
+    box.innerHTML =
+      '<div class="cta-sheet-handle"></div>' +
+      '<div class="cta-sheet-title">联系 · ' + siteName + '</div>' +
+      '<div class="cta-sheet-body">' +
+        '<a href="tel:' + phone + '" class="cta-opt-item">' +
+          '<div class="cta-opt-icon" style="background:#1d6fd8">📞</div>' +
+          '<div class="cta-opt-text">' +
+            '<div class="cta-opt-title">拨打电话</div>' +
+            '<div class="cta-opt-sub">' + phoneDisplay + '</div>' +
+          '</div>' +
+          '<div class="cta-opt-arrow">›</div>' +
+        '</a>' +
+        wechatBtn +
+      '</div>' +
+      '<button class="cta-sheet-cancel" onclick="closeContactCta()">取消</button>';
+    mask.addEventListener('click', closeContactCta);
   } else {
-    // 电脑：弹出自定义选择框
-    if (document.getElementById('_contactCtaBox')) document.getElementById('_contactCtaBox').remove();
-    var box = document.createElement('div');
-    box.id = '_contactCtaBox';
+    // 电脑：居中浮窗
+    mask.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:999998';
     box.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:16px;padding:28px 24px;z-index:999999;min-width:300px;box-shadow:0 20px 60px rgba(0,0,0,.25);font-family:sans-serif;text-align:center';
+    var wechatA = wechatId
+      ? '<a href="#" onclick="copyWechat();return false" style="display:flex;align-items:center;gap:12px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:14px 16px;text-decoration:none;margin-bottom:10px;transition:background .15s">' +
+          '<span style="font-size:26px">💬</span>' +
+          '<div style="text-align:left;flex:1"><div style="font-size:14px;font-weight:600;color:#16a34a">添加微信</div><div style="font-size:13px;color:#64748b">' + wechatId + '</div></div>' +
+          '<span style="color:#86efac;font-size:18px">›</span>' +
+        '</a>'
+      : '';
     box.innerHTML =
       '<div style="font-size:18px;font-weight:600;margin-bottom:4px;color:#222">选择联系方式</div>' +
-      '<div style="font-size:13px;color:#999;margin-bottom:20px">联系 · ' + (siteData.shortName || '中程装饰') + '</div>' +
+      '<div style="font-size:13px;color:#999;margin-bottom:20px">联系 · ' + siteName + '</div>' +
       '<a href="tel:' + phone + '" style="display:flex;align-items:center;gap:12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:14px 16px;text-decoration:none;margin-bottom:10px;transition:background .15s">' +
         '<span style="font-size:26px">📞</span>' +
-        '<div style="text-align:left;flex:1">' +
-          '<div style="font-size:14px;font-weight:600;color:#1d4ed8">拨打电话</div>' +
-          '<div style="font-size:13px;color:#64748b">' + (contactData.phoneDisplay || phone) + '</div>' +
-        '</div>' +
+        '<div style="text-align:left;flex:1"><div style="font-size:14px;font-weight:600;color:#1d4ed8">拨打电话</div><div style="font-size:13px;color:#64748b">' + phoneDisplay + '</div></div>' +
         '<span style="color:#93c5fd;font-size:18px">›</span>' +
       '</a>' +
-      '<a href="#" onclick="copyWechat();return false" style="display:flex;align-items:center;gap:12px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:14px 16px;text-decoration:none;margin-bottom:10px;transition:background .15s">' +
-        '<span style="font-size:26px">💬</span>' +
-        '<div style="text-align:left;flex:1">' +
-          '<div style="font-size:14px;font-weight:600;color:#15803d">添加微信</div>' +
-          '<div style="font-size:13px;color:#64748b">' + (contactData.wechat || '长按复制微信号') + '</div>' +
-        '</div>' +
-        '<span style="color:#86efac;font-size:18px">›</span>' +
-      '</a>' +
+      wechatA +
       '<button onclick="closeContactCta()" style="margin-top:10px;background:none;border:none;color:#94a3b8;font-size:13px;cursor:pointer;padding:8px 16px;border-radius:8px">取消</button>';
-    var mask = document.createElement('div');
-    mask.id = '_contactCtaMask';
-    mask.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:999998';
     mask.addEventListener('click', closeContactCta);
-    document.body.appendChild(mask);
-    document.body.appendChild(box);
   }
+
+  document.body.appendChild(mask);
+  document.body.appendChild(box);
 }
 
 function closeContactCta() {
   var box = document.getElementById('_contactCtaBox');
   var mask = document.getElementById('_contactCtaMask');
+  if (box) box.remove();
+  if (mask) mask.remove();
+}
+
+function showWechatQR() {
+  closeContactCta();
+  var wechatQR = contactData.wechatQR || '';
+  var wechatId = contactData.wechat || '';
+
+  if (document.getElementById('_wechatQRMask')) document.getElementById('_wechatQRMask').remove();
+  if (document.getElementById('_wechatQRBox')) document.getElementById('_wechatQRBox').remove();
+
+  var mask = document.createElement('div');
+  mask.id = '_wechatQRMask';
+  mask.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:999998';
+  mask.addEventListener('click', closeWechatQR);
+
+  var box = document.createElement('div');
+  box.id = '_wechatQRBox';
+  var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+  if (wechatQR) {
+    // 有二维码：显示大图
+    var qrSize = isMobile ? '240px' : '280px';
+    box.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:20px;padding:28px 24px;z-index:999999;max-width:340px;width:calc(100% - 40px);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)';
+    box.innerHTML =
+      '<div style="font-size:18px;font-weight:700;color:#111;margin-bottom:4px">扫码添加微信</div>' +
+      '<div style="font-size:13px;color:#6b7280;margin-bottom:16px">长按识别二维码，快速获取报价</div>' +
+      '<img src="' + wechatQR + '" alt="微信二维码" style="width:' + qrSize + ';height:' + qrSize + ';border-radius:12px;border:1px solid #e5e7eb;display:block;margin:0 auto 16px" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'\'">' +
+      '<div style="display:none;font-size:13px;color:#9ca3af;margin-bottom:12px">图片加载失败</div>' +
+      (wechatId ? '<div style="font-size:14px;color:#374151;margin-bottom:4px">微信号：<strong>' + wechatId + '</strong></div>' : '') +
+      '<div style="font-size:12px;color:#9ca3af;margin-bottom:16px">' + (wechatId ? '或复制微信号添加' : '请在后台设置微信二维码') + '</div>' +
+      (wechatId ? '<button onclick="copyWechat()" style="padding:10px 28px;background:#07c160;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">复制微信号</button><br>' : '') +
+      '<button onclick="closeWechatQR()" style="margin-top:10px;background:none;border:none;color:#9ca3af;font-size:13px;cursor:pointer;padding:6px 16px">关闭</button>';
+  } else {
+    // 无二维码：显示提示
+    box.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:20px;padding:32px 24px;z-index:999999;max-width:300px;width:calc(100% - 40px);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)';
+    box.innerHTML =
+      '<div style="font-size:40px;margin-bottom:12px">💬</div>' +
+      '<div style="font-size:16px;font-weight:600;color:#111;margin-bottom:8px">微信咨询</div>' +
+      '<div style="font-size:13px;color:#6b7280;margin-bottom:16px;line-height:1.6">' + (wechatId ? '微信号：<strong>' + wechatId + '</strong>' : '请在后台设置微信号') + '</div>' +
+      (wechatId ? '<button onclick="copyWechat()" style="padding:12px 28px;background:#07c160;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;width:100%;margin-bottom:8px">复制微信号</button>' : '') +
+      '<button onclick="closeWechatQR()" style="background:#f3f4f6;border:none;border-radius:10px;font-size:14px;color:#374151;cursor:pointer;width:100%;padding:12px' + (wechatId ? '' : ';margin-top:0') + '">关闭</button>';
+  }
+
+  document.body.appendChild(mask);
+  document.body.appendChild(box);
+}
+
+function closeWechatQR() {
+  var box = document.getElementById('_wechatQRBox');
+  var mask = document.getElementById('_wechatQRMask');
   if (box) box.remove();
   if (mask) mask.remove();
 }
