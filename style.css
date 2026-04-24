@@ -1033,17 +1033,58 @@ section { padding: 88px 0; }
   .services-grid { grid-template-columns: 1fr; }
   .service-card.featured { grid-column: span 1; }
   .contact-grid { grid-template-columns: 1fr; }
-  .brands-grid { grid-template-columns: repeat(2, 1fr); }
+  .brands-grid { grid-template-columns: 1fr; gap: 14px; }
   .cases-grid { grid-template-columns: repeat(2, 1fr); }
   section { padding: 60px 0; }
+
+  /* 手机端品牌卡片：垂直布局 */
+  .brand-card .brand-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0 10px;
+  }
+  .brand-card .brand-media {
+    width: 80px;
+    height: 80px;
+  }
+  .brand-card .brand-logo-img {
+    width: 80px;
+    height: 80px;
+  }
+  .brand-card .brand-info { width: 100%; }
+  .brand-card .brand-name { white-space: normal; overflow: visible; }
+  .brand-card .brand-desc { -webkit-line-clamp: 3; }
+  .brand-card-cta { padding: 8px 0 0; text-align: left; }
 }
 @media (max-width: 480px) {
   .hero-stats { flex-wrap: wrap; justify-content: center; }
   .stat-divider { display: none; }
   .adv-grid { grid-template-columns: 1fr; }
-  .brands-grid { grid-template-columns: 1fr 1fr; }
+  .brands-grid { grid-template-columns: 1fr; gap: 12px; }
   .cases-grid { grid-template-columns: 1fr; }
   .contact-form-wrap { padding: 24px 16px; }
+
+  /* 手机端品牌卡片：垂直布局，图片在上 */
+  .brand-card { padding: 14px; }
+  .brand-card .brand-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0 8px;
+  }
+  .brand-card .brand-media {
+    width: 72px;
+    height: 72px;
+  }
+  .brand-card .brand-logo-img {
+    width: 72px;
+    height: 72px;
+  }
+  .brand-card .brand-info { width: 100%; }
+  .brand-card .brand-name { white-space: normal; overflow: visible; }
+  .brand-card .brand-desc { -webkit-line-clamp: 3; }
+  .brand-card-cta { padding: 8px 0 0; text-align: left; }
 }
 
 /* ========== 浮动拨打按钮 ========== */
@@ -1096,3 +1137,133 @@ section { padding: 88px 0; }
   transition: opacity 0.3s ease, transform 0.2s ease;
 }
 .back-to-top:hover { transform: translateY(-2px); }
+
+/* ========== 联系选择弹窗（手机底部样式） ========== */
+.cta-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: #d1d5db;
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.cta-sheet-title {
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 16px;
+  font-family: sans-serif;
+}
+.cta-sheet-body {
+  padding: 0 16px;
+}
+.cta-opt-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 10px;
+  transition: background 0.15s;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+.cta-opt-item:active {
+  background: #f3f4f6;
+}
+.cta-opt-item:last-of-type {
+  margin-bottom: 0;
+}
+.cta-opt-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.cta-opt-text {
+  flex: 1;
+}
+.cta-opt-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 2px;
+}
+.cta-opt-sub {
+  font-size: 13px;
+  color: #6b7280;
+}
+.cta-opt-arrow {
+  font-size: 22px;
+  color: #d1d5db;
+  font-weight: 300;
+}
+.cta-sheet-cancel {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 16px auto 0;
+  padding: 14px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  font-family: sans-serif;
+  text-align: center;
+}
+.cta-sheet-cancel:active {
+  background: #e5e7eb;
+}
+
+/* ========== 微信二维码弹窗 ========== */
+.wechat-qr-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  z-index: 1000000;
+  text-align: center;
+  max-width: 280px;
+  width: calc(100% - 40px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+.wechat-qr-modal img {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.wechat-qr-modal p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 16px;
+  font-family: sans-serif;
+}
+.wechat-qr-modal button {
+  padding: 10px 24px;
+  background: #07c160;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: sans-serif;
+}
+.wechat-qr-modal button:active {
+  background: #06ad56;
+}
