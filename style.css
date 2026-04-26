@@ -46,14 +46,14 @@ body {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 1000;
-  padding: 16px 0;
+  padding: 10px 0;
   background: transparent;
   transition: background var(--transition), box-shadow var(--transition), padding var(--transition);
 }
 .navbar.scrolled {
   background: rgba(255,255,255,.97);
   box-shadow: var(--shadow-md);
-  padding: 10px 0;
+  padding: 6px 0;
   backdrop-filter: blur(12px);
 }
 .nav-inner {
@@ -70,7 +70,8 @@ body {
   transition: color var(--transition);
 }
 .navbar.scrolled .logo { color: var(--primary); }
-.logo-icon { font-size: 1.8rem; }
+.logo-icon { font-size: 1.8rem; line-height: 1; }
+.logo-icon img { width: 110px; height: 110px; object-fit: contain; }
 .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
 .logo-text strong { font-size: 1.1rem; font-weight: 700; }
 .logo-text small { font-size: .75rem; opacity: .8; }

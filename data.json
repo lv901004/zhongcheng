@@ -12,7 +12,7 @@
     "statsTeam": "50+",
     "statsBrands": "3",
     "founded": "2021年3月",
-    "logo": "images/upload_5308196f.png"
+    "logo": "images/upload_0218de18.png"
   },
   "contact": {
     "phone": "19148031345",
@@ -341,7 +341,6 @@
       "id": "jiabaoli",
       "name": "嘉宝莉",
       "badge": "合作品牌",
-      "featured": false,
       "sub": "建筑涂料",
       "cardDesc": "中国涂料行业前三甲，国家级企业技术中心，出口全球30多国",
       "intro": "嘉宝莉化工集团是中国领先的涂料及涂装方案提供商。",
@@ -356,13 +355,15 @@
         "国家级企业技术中心",
         "绿色环保认证",
         "出口全球30多国"
-      ]
+      ],
+      "featured": false,
+      "logo": "images/upload_96f051ad.png",
+      "images": []
     },
     {
       "id": "guke",
       "name": "固克",
       "badge": "合作品牌",
-      "featured": false,
       "sub": "外墙涂料",
       "cardDesc": "建筑外墙装饰专家，真石漆·保温一体板，工程遍布全国",
       "intro": "固克节能科技专注于建筑外墙涂料和保温装饰一体板的研发、生产和销售。",
@@ -377,13 +378,15 @@
         "保温装饰一体化",
         "耐候性强",
         "工程案例遍布全国"
-      ]
+      ],
+      "featured": false,
+      "logo": "images/upload_7ce2aaba.png",
+      "images": []
     },
     {
       "id": "keshun",
       "name": "科顺",
       "badge": "合作品牌",
-      "featured": false,
       "sub": "防水材料",
       "cardDesc": "A股上市防水企业，国家级高新技术企业，防水工程全程专业服务",
       "intro": "科顺防水科技是国内领先的防水材料供应商。",
@@ -398,7 +401,10 @@
         "国家级高新技术企业",
         "防水工程专家",
         "全国布局生产基地"
-      ]
+      ],
+      "featured": false,
+      "logo": "images/upload_a29e5d34.png",
+      "images": []
     }
   ],
   "inquiries": []

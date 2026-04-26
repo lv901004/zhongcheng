@@ -60,7 +60,7 @@ function initSiteData() {
   if (s.logo) {
     var navLogoIcon = document.getElementById('navLogoIcon');
     if (navLogoIcon) {
-      navLogoIcon.innerHTML = '<img src="' + s.logo + '" alt="logo" style="width:32px;height:32px;object-fit:contain;" />';
+      navLogoIcon.innerHTML = '<img src="' + s.logo + '" alt="logo" style="width:110px;height:110px;object-fit:contain;" />';
     }
   }
   if (s.shortName) {
@@ -901,6 +901,17 @@ function initModal() {
     // 存储图片数据供切换使用
     window._serviceGalleryData = { images: data.images || [], id: id };
 
+    // 无论单图多图，点击主图都能放大
+    window._zoomServiceImg = function(src, svcId) {
+      if (window._serviceGalleryData && window._serviceGalleryData.images && window._serviceGalleryData.images.length > 0) {
+        var idx = window._serviceGalleryData.images.indexOf(src);
+        if (idx === -1) idx = 0;
+        _openGallery(window._serviceGalleryData.images, idx);
+      } else if (src) {
+        _openGallery([src], 0);
+      }
+    };
+
     if (data.images && data.images.length > 1) {
       window.setServiceSlide = function(svcId, idx) {
         if (window._serviceGalleryData && window._serviceGalleryData.id === svcId) {
@@ -912,14 +923,6 @@ function initModal() {
             setTimeout(() => mainImg.classList.remove('fade-in'), 300);
           }
           thumbs.forEach(t => t.classList.toggle('active', parseInt(t.dataset.idx) === idx));
-        }
-      };
-
-      window._zoomServiceImg = function(src, svcId) {
-        if (window._serviceGalleryData && window._serviceGalleryData.images) {
-          var idx = window._serviceGalleryData.images.indexOf(src);
-          if (idx === -1) idx = 0;
-          _openGallery(window._serviceGalleryData.images, idx);
         }
       };
     }
@@ -994,6 +997,14 @@ function initModal() {
     // 存储图片数据供切换使用
     window._brandGalleryData = { images: data.images || [], id: id };
 
+    window._zoomBrandImg = function(src, brandId) {
+      if (window._brandGalleryData && window._brandGalleryData.images) {
+        var idx = window._brandGalleryData.images.indexOf(src);
+        if (idx === -1) idx = 0;
+        _openGallery(window._brandGalleryData.images, idx);
+      }
+    };
+
     if (data.images && data.images.length > 1) {
       window.setBrandSlide = function(brandId, idx) {
         if (window._brandGalleryData && window._brandGalleryData.id === brandId) {
@@ -1005,14 +1016,6 @@ function initModal() {
             setTimeout(() => mainImg.classList.remove('fade-in'), 300);
           }
           thumbs.forEach(t => t.classList.toggle('active', parseInt(t.dataset.idx) === idx));
-        }
-      };
-
-      window._zoomBrandImg = function(src, brandId) {
-        if (window._brandGalleryData && window._brandGalleryData.images) {
-          var idx = window._brandGalleryData.images.indexOf(src);
-          if (idx === -1) idx = 0;
-          _openGallery(window._brandGalleryData.images, idx);
         }
       };
     }
