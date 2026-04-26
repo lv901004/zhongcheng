@@ -51,10 +51,9 @@ body {
   transition: background var(--transition), box-shadow var(--transition), padding var(--transition);
 }
 .navbar.scrolled {
-  background: rgba(255,255,255,.97);
-  box-shadow: var(--shadow-md);
+  background: transparent;
+  box-shadow: none;
   padding: 6px 0;
-  backdrop-filter: blur(12px);
 }
 .nav-inner {
   display: flex;
@@ -70,6 +69,7 @@ body {
   transition: color var(--transition);
 }
 .navbar.scrolled .logo { color: var(--primary); }
+.navbar.scrolled .nav-toggle span { background: var(--text); }
 .logo-icon { font-size: 1.8rem; line-height: 1; }
 .logo-icon img { width: 110px; height: 110px; object-fit: contain; }
 .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
